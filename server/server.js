@@ -12,7 +12,7 @@ const app = express();
 
 // CORS configuration - must be first
 app.use(cors({
-  origin: "*",
+  origin: ["https://quizdeck.netlify.app/","http://localhost:8080"],
   credentials: true
 }));
 
