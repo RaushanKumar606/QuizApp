@@ -16,7 +16,7 @@ app.use(cors({
   credentials: true
 }));
 
-// Body parsing middleware - MUST come before routes
+
 // These parse the request body and make it available in req.body
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
