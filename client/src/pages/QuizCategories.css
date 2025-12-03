@@ -1,0 +1,68 @@
+.cat-container {
+  width: 90%;
+  margin: auto;
+  padding-top: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Header Section */
+.cat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.take-quiz-btn {
+  padding: 10px 20px;
+  border: 2px solid black;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.take-quiz-btn:hover {
+  background-color: #eaeaea;
+}
+
+.cat-username {
+  padding: 10px 20px;
+  border: 2px solid black;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* Divider Line */
+.cat-divider {
+  margin: 20px 0;
+  border: none;
+  height: 2px;
+  background: black;
+}
+
+/* Grid Layout */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 30px;
+  padding: 20px 0;
+}
+
+/* Category Box */
+.cat-box {
+  border: 2px solid black;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  background: white;
+  transition: 0.2s ease;
+}
+
+.cat-box:hover {
+  transform: scale(1.05);
+  background: #f7f7f7;
+}

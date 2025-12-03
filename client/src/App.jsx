@@ -1,0 +1,48 @@
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import Login from './pages/Login';
+import Signup from './pages/SingUp';
+import Dashboard from './pages/Dashboard';
+import Quiz from './pages/Quiz';
+import Result from './pages/Result';
+import AddQuestion from './pages/AddQuestion';
+import QuizCategories from './pages/QuizCategary';
+
+export default function App() {
+  const [me, setMe] = useState(JSON.parse(localStorage.getItem('me')) || null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (me) localStorage.setItem('me', JSON.stringify(me));
+  }, [me]);
+
+  const onLogin = (token, user) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('me', JSON.stringify(user));
+    setMe(user);
+    // navigate('/dashboard');
+     navigate('/quiz-categary');
+  };
+
+  const onLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('me');
+    setMe(null);
+    navigate('/login');
+  };
+
+  return (
+    <div className="min-h-screen">
+      <Routes>
+        <Route path="/" element={<Login onLogin={onLogin} />} />
+        <Route path="/login" element={<Login onLogin={onLogin} />} />
+         <Route path="/quiz-categary" element={<QuizCategories me={me} />} />
+        <Route path="/signup" element={<Signup onLogin={onLogin} />} />
+        <Route path="/dashboard" element={<Dashboard me={me} onLogout={onLogout} />} />
+        <Route path="/quiz" element={<Quiz me={me} />} />
+        <Route path="/result" element={<Result />} />
+        <Route path="/add-question" element={<AddQuestion me={me} />} />
+      </Routes>
+    </div>
+  );
+}
