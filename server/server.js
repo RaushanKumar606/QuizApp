@@ -12,7 +12,7 @@ const app = express();
 
 // CORS configuration - must be first
 app.use(cors({
-  origin: ["https://quizdeck.netlify.app","http://localhost:8080"],
+  origin: ["https://quiz-app-nine-plum-46.vercel.app/","http://localhost:8080"],
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
@@ -20,7 +20,7 @@ app.use(cors({
 
 // Handle preflight
 app.options("*", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://quizdeck.netlify.app");
+  res.setHeader("Access-Control-Allow-Origin", "https://quiz-app-nine-plum-46.vercel.app/");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Allow-Credentials", "true");
