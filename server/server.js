@@ -18,15 +18,6 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// Handle preflight
-app.options("*", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://quiz-app-nine-plum-46.vercel.app/");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.sendStatus(200);
-});
-
 // These parse the request body and make it available in req.body
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
