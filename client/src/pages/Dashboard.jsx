@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import api from "../api";
+import api from "../utils/api";
 import './Dashboard.css';
 
 export default function Dashboard({ me, }) {
   const [user, setUser] = useState(me);
   const [latestScore , setLatestScore] = useState([])
-  console.log("all detiles for user ",user)
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem('me')) || me);
 
@@ -17,7 +16,7 @@ export default function Dashboard({ me, }) {
     const fetched = res.data?.latestScore || [];   
        setLatestScore(fetched);
     } catch (error) {
-      alert(error.response?.data?.msg || 'Failed to load questions.');
+      alert(error.response?.data?.msg || 'Failed to load LatestScore.');
     }
     }
     fetchLatestScore();
@@ -28,7 +27,6 @@ export default function Dashboard({ me, }) {
     localStorage.removeItem("me");
     window.location.href = "/login";
   };
-
   if (!user) {
     return (
       <div className="dashboard-empty">
@@ -41,12 +39,9 @@ export default function Dashboard({ me, }) {
       </div>
     );
   }
-
   return (
     <div className="dashboard">
       <Navbar me={user} onLogout={onLogout} />
-      
-      
       <div className="dashboard-container">
         {/* Welcome Section */}
         <div className="card dashboard-welcome">
