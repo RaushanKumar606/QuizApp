@@ -3,8 +3,11 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import authRoutes from "./routes/authRouter.js";
-import quizRoutes from "./routes/quizRouter.js";
+// import authRoutes from "./routes/authRouter.js";
+// import quizRoutes from "./routes/quizRouter.js";
+import quizRoutes from "./routes/quizRoutes.js"; // if file is quizRoutes.js
+import authRoutes from "./routes/authRoutes.js";
+
 
 dotenv.config();
 
@@ -12,7 +15,7 @@ const app = express();
 
 // CORS configuration - must be first
 app.use(cors({
-  origin: ["https://quiz-app-nine-plum-46.vercel.app/","http://localhost:8080"],
+  origin: ["https://quiz-app-nine-plum-46.vercel.app/"],
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
