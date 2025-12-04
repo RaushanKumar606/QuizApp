@@ -8,16 +8,15 @@ const JWT_EXPIRES = process.env.JWT_EXPIRES || "7d";
 
 export const signup = async (req, res) => {
   try {
-    // Check if req.body exists
+     // Check if req.body exists
     if (!req.body || typeof req.body !== "object") {
-      console.error("req.body is undefined or invalid:", req.body);
       return res.status(400).json({ 
         msg: "Invalid request. Please send JSON data with Content-Type: application/json" 
       });
     }
 
     const { name, email, password } = req.body;
-    
+    console.log(name,email,password);
     // Validation - check if fields exist
     if (!name || !email || !password) {
       return res.status(400).json({ 
@@ -156,7 +155,6 @@ export const login = async (req, res) => {
     });
   }
 };
-
 // Get user profile
 export const getProfile = async (req, res) => {
   try {

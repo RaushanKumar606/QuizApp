@@ -8,35 +8,27 @@ import User from "../models/User.js";
  */
 export const getQuestions = async (req, res) => {
   try {
-    console.log("📋 Fetching quiz questions...");
     const limit = Math.min(parseInt(req.query.limit || "20", 10), 100);
-    
     const questions = await Question.find()
       .limit(limit)
       .lean();
-
-    console.log(`✅ Found ${questions.length} questions in database`);
 
     // Remove correct answer before sending to frontend
     const publicQs = questions.map(({ answer, ...rest }) => rest);
 
     if (publicQs.length === 0) {
-      console.warn("⚠️ No questions found in database");
       return res.json({ 
         questions: [],
         total: 0,
         message: "No questions available. Please add questions to the database."
       });
     }
-
-    console.log(`📤 Sending ${publicQs.length} questions to client`);
-
     res.json({ 
       questions: publicQs,
       total: publicQs.length 
     });
   } catch (err) {
-    console.error("❌ getQuestions error:", err);
+    console.error(" getQuestions error:", err);
     console.error("Error details:", {
       message: err.message,
       stack: err.stack
@@ -56,12 +48,6 @@ export const submitQuiz = async (req, res) => {
   try {
     const userId = req.userId;
     const { answers, questionIds, timeTaken = 0 } = req.body;
-
-    console.log("📝 Quiz submission received:", {
-      userId,
-      questionCount: questionIds?.length || 0,
-      answerCount: answers?.length || 0
-    });
 
     if (!answers || !Array.isArray(answers) || !questionIds || !Array.isArray(questionIds)) {
       return res.status(400).json({ msg: "Invalid request format. answers and questionIds arrays are required." });
@@ -122,8 +108,6 @@ export const submitQuiz = async (req, res) => {
     user.scores.push(newScore._id);
     await user.save();
 
-    console.log(`✅ Quiz submitted - Score: ${correctCount}/${totalQuestions} (${percentage}%)`);
-
     res.json({
       msg: "Quiz submitted successfully",
       result: {
@@ -137,9 +121,8 @@ export const submitQuiz = async (req, res) => {
       scoreId: newScore._id
     });
   } catch (err) {
-    console.error("❌ submitQuiz error:", err);
     res.status(500).json({ 
-      msg: process.env.NODE_ENV === "development" ? err.message : "Failed to submit quiz" 
+      msg: process.env.NODE_ENV === "development" ? err.message : "Failed to submit quiz error" 
     });
   }
 };
@@ -278,9 +261,6 @@ export const addQuestion = async (req, res) => {
     });
   }
 };
-
-
-
 
 export const getLatestScore = async (req, res) => {
   try {
