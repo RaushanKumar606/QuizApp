@@ -8,7 +8,7 @@ export default function Navbar({ me, onLogout }) {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <Link to="/dashboard" className="navbar-brand">
+        <Link to="/home" className="navbar-brand">
           SmartQuiz
         </Link>
 

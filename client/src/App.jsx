@@ -7,6 +7,7 @@ import Quiz from './pages/Quiz';
 import Result from './pages/Result';
 import AddQuestion from './pages/AddQuestion';
 import QuizCategories from './pages/QuizCategary';
+import Home from "./pages/Home"
 
 export default function App() {
   const [me, setMe] = useState(JSON.parse(localStorage.getItem('me')) || null);
@@ -23,18 +24,17 @@ export default function App() {
     // navigate('/dashboard');
      navigate('/quiz-categary');
   };
-
   const onLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('me');
     setMe(null);
     navigate('/login');
   };
-
   return (
     <div className="min-h-screen">
       <Routes>
-        <Route path="/" element={<Login onLogin={onLogin} />} />
+
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login onLogin={onLogin} />} />
          <Route path="/quiz-categary" element={<QuizCategories me={me} />} />
         <Route path="/signup" element={<Signup onLogin={onLogin} />} />
