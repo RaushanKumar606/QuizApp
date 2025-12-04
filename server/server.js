@@ -13,7 +13,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cors({
-  origin: ["*","http://localhost:5173","https://quiz-app-nine-plum-46.vercel.app","http://localhost:5174"],
+  origin: ["http://localhost:5173","https://quiz-app-nine-plum-46.vercel.app"],
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]

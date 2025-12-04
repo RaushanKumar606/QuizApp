@@ -12,7 +12,7 @@ export default function HomePage() {
         <p>Test your knowledge, improve your skills, and challenge yourself.</p>
         <div className="hero-buttons">
           <Link to="/signup" className="btn primary">Get Started</Link>
-          <Link to="/quiz" className="btn secondary">Take a Quiz</Link>
+          <Link to="/login" className="btn secondary">Take a Quiz</Link>
         </div>
       </section>
 
