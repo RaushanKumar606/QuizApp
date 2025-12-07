@@ -27,7 +27,6 @@ export const getQuestions = async (req, res) => {
       options: q.options,
       answer: q.answer   // ⬅ ADD THIS BACK
     }));
-    console.log(publicQs)
 
     res.json({ 
       questions: publicQs,
@@ -247,8 +246,6 @@ export const addQuestion = async (req, res) => {
       answer: answer.trim(),
       category: category || "General"
     });
-
-    console.log(`✅ New question added: ${newQuestion._id}`);
 
     res.status(201).json({
       msg: "Question added successfully",

@@ -69,7 +69,7 @@ export default function Quiz({ me }) {
 
   // When user selects an option
   const handleAnswerSelect = (key) => {
-    const correctKey = String(currentQuestion.answer); // Always string
+    const correctKey = String(currentQuestion.answer); 
     setSelectedAnswer(key);
     setShowResult(true);
     setIsCorrect(key === correctKey);
