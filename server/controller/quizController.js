@@ -8,10 +8,11 @@ import User from "../models/User.js";
  */
 export const getQuestions = async (req, res) => {
   try {
-    const limit = Math.min(parseInt(req.query.limit || "20", 10), 100);
+    // const limit = Math.min(parseInt(req.query.limit || "20", 10), 100);
     const questions = await Question.find()
-      .limit(limit)
-      .lean();
+      // .limit(limit)
+      // .lean();
+
 
     if (questions.length === 0) {
       return res.json({ 
