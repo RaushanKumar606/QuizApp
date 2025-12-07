@@ -299,48 +299,57 @@ export const getUserScores = async (req, res) => {
  * POST /api/quiz/add-question (Admin - for adding questions)
  * Add a new quiz question
  */
+// backend/controller/questionController.js
+
+// controllers/questionController.js
+
 export const addQuestion = async (req, res) => {
+  const { question, options, answer, category } = req.body;
+
   try {
-    const { question, options, answer, category = "General" } = req.body;
-
-    // Validation
     if (!question || !options || !answer) {
-      return res.status(400).json({ msg: "Missing required fields: question, options, and answer are required" });
+      return res.status(400).json({ msg: "Please provide question text, options, and the correct answer." });
     }
 
-    if (!Array.isArray(options) || options.length < 2 || options.length > 6) {
-      return res.status(400).json({ msg: "Options must be an array with 2-6 items" });
-    }
-
-    if (!options.includes(answer)) {
-      return res.status(400).json({ msg: "Answer must be one of the provided options" });
-    }
-
-    // Create question
-    const newQuestion = await Question.create({
-      question: question.trim(),
-      options: options.map(opt => String(opt).trim()),
-      answer: answer.trim(),
+    const newQuestion = new Question({
+      question,
+      options,
+      answer,
       category: category || "General"
     });
-
+    const savedQuestion = await newQuestion.save();
     res.status(201).json({
-      msg: "Question added successfully",
+      msg: "Question added successfully.",
       question: {
-        _id: newQuestion._id,
-        question: newQuestion.question,
-        options: newQuestion.options,
-        category: newQuestion.category
-        // Don't send answer in response
+        _id: savedQuestion._id,
+        question: savedQuestion.question,
+        options: savedQuestion.options,
+        category: savedQuestion.category,
+       
       }
     });
+
   } catch (err) {
-    console.error("addQuestion error:", err);
+
+    if (err.name === 'ValidationError') {
+      const errors = Object.values(err.errors).map(el => el.message);
+      return res.status(400).json({ msg: "Validation failed.", errors });
+    }
+    
+
+    if (err.message === "Answer must be one of the provided options") {
+       return res.status(400).json({ msg: err.message });
+    }
+    console.error("Error adding question:", err);
     res.status(500).json({ 
-      msg: process.env.NODE_ENV === "development" ? err.message : "Failed to add question" 
+      msg: "Failed to add question due to a server error.",
+      error: process.env.NODE_ENV === "development" ? err.message : undefined 
     });
   }
 };
+
+
+
 
 export const getLatestScore = async (req, res) => {
   try {
