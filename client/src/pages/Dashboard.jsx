@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
 import api from "../utils/api";
 import './Dashboard.css';
 
@@ -41,7 +40,6 @@ export default function Dashboard({ me, }) {
   }
   return (
     <div className="dashboard">
-      <Navbar me={user} onLogout={onLogout} />
       <div className="dashboard-container">
         {/* Welcome Section */}
         <div className="card dashboard-welcome">

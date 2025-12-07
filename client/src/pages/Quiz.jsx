@@ -1,8 +1,6 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../utils/api";
-import Navbar from "../components/Navbar";
 import "./Quiz.css";
 
 export default function Quiz({ me }) {
@@ -12,8 +10,8 @@ export default function Quiz({ me }) {
   const [current, setCurrent] = useState(0);
   const [timer, setTimer] = useState(15);
   const [answers, setAnswers] = useState([]);
-
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(null);
   const [correctAnswer, setCorrectAnswer] = useState("");
@@ -29,13 +27,12 @@ export default function Quiz({ me }) {
     const loadQuestions = async () => {
       try {
         setLoading(true);
-        const res = await api.get("/quiz/questions");
+        const res = await api.get("/quiz/questions?page=1&limit=20");
         const q = res.data?.questions || [];
         if (!q.length) {
           setError("No questions found.");
           return;
         }
-
         setQuestions(q);
         startTimeRef.current = Date.now();
       } catch (err) {
@@ -48,35 +45,53 @@ export default function Quiz({ me }) {
   }, []);
 
   // Submit quiz
-  const submitQuiz = async (finalAnswers) => {
+  const submitQuiz = async (answers, questionIds, timeTaken) => {
     setSubmitting(true);
     try {
-      const timeTaken = Math.floor((Date.now() - startTimeRef.current) / 1000);
-      const ids = questions.map((q) => q._id);
+      const token = localStorage.getItem("token");
+      const res = await api.post(
+        "/quiz/submit",
+        { answers, questionIds, timeTaken },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-      const res = await api.post("/quiz/submit", {
-        answers: finalAnswers,
-        questionIds: ids,
-        timeTaken,
-      });
-
-      localStorage.setItem("lastResult", JSON.stringify(res.data.result));
-      navigate("/result");
-    } catch (e) {
-      alert("Failed to submit quiz.");
+      if (res.data.result) {
+        localStorage.setItem("lastResult", JSON.stringify(res.data.result));
+        navigate("/result");
+      } else {
+        alert("Quiz submitted but no result returned.");
+      }
+    } catch (error) {
+      if (error.response?.status === 401) {
+        alert("Unauthorized! Please login again.");
+        // localStorage.removeItem("token");
+        // navigate("/login");
+      } else {
+        alert("Failed to submit quiz. Try again.");
+      }
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  // When user selects an option
+  const currentQuestion = questions[current];
+
+  // User selects answer
   const handleAnswerSelect = (key) => {
-    const correctKey = String(currentQuestion.answer); 
+    const correctKey = String(currentQuestion.answer);
     setSelectedAnswer(key);
     setShowResult(true);
     setIsCorrect(key === correctKey);
     setCorrectAnswer(correctKey);
   };
-  // Next question
+
+  // Move to next question
   const handleNext = () => {
+    if (selectedAnswer === null) {
+      alert("Please select an answer first!");
+      return;
+    }
+
     const newAns = [...answers, selectedAnswer];
     setAnswers(newAns);
 
@@ -87,11 +102,14 @@ export default function Quiz({ me }) {
       setCurrent(current + 1);
       setTimer(15);
     } else {
-      submitQuiz(newAns);
+      // Prepare submission
+      const questionIds = questions.map((q) => q._id);
+      const timeTaken = Math.floor((Date.now() - startTimeRef.current) / 1000);
+      submitQuiz(newAns, questionIds, timeTaken);
     }
   };
 
-  // Timer
+  // Timer countdown
   useEffect(() => {
     if (loading || submitting || !questions.length || showResult) return;
 
@@ -100,14 +118,13 @@ export default function Quiz({ me }) {
       return;
     }
 
-    const t = setTimeout(() => setTimer((p) => p - 1), 1000);
+    const t = setTimeout(() => setTimer((t) => t - 1), 1000);
     return () => clearTimeout(t);
   }, [timer, showResult]);
 
   if (loading)
     return (
       <div className="quiz">
-        <Navbar me={me} />
         <h2>Loading...</h2>
       </div>
     );
@@ -115,21 +132,17 @@ export default function Quiz({ me }) {
   if (error)
     return (
       <div className="quiz">
-        <Navbar me={me} />
         <h2>{error}</h2>
       </div>
     );
 
-  const currentQuestion = questions[current];
   const optionEntries = Object.entries(currentQuestion.options);
   const progress = ((current + 1) / questions.length) * 100;
 
   return (
     <div className="quiz">
-      <Navbar me={me} />
-
       <div className="quiz-container">
-        {/* Progress */}
+        {/* Progress Bar */}
         <div className="card quiz-progress-card">
           <div className="quiz-progress-header">
             <span>
@@ -148,9 +161,7 @@ export default function Quiz({ me }) {
         {/* Timer */}
         {!showResult && (
           <div className="card quiz-timer-card">
-            <h3 className={timer <= 5 ? "quiz-timer-warning" : ""}>
-              {timer}s
-            </h3>
+            <h3 className={timer <= 5 ? "quiz-timer-warning" : ""}>{timer}s</h3>
           </div>
         )}
 
@@ -163,7 +174,6 @@ export default function Quiz({ me }) {
             {optionEntries.map(([key, text], index) => {
               let optionClass = "quiz-option";
 
-              // highlight after answer
               if (showResult) {
                 if (key === correctAnswer) optionClass += " quiz-option-correct";
                 else if (key === selectedAnswer)
@@ -179,9 +189,7 @@ export default function Quiz({ me }) {
                   className={optionClass}
                 >
                   <div className="quiz-option-content">
-                    <div className="quiz-option-letter">
-                      {String.fromCharCode(65 + index)}
-                    </div>
+                    <div className="quiz-option-letter">{String.fromCharCode(65 + index)}</div>
                     <span className="quiz-option-text">{text}</span>
                   </div>
                 </button>
@@ -189,22 +197,20 @@ export default function Quiz({ me }) {
             })}
           </div>
 
-          {/* SHOW RESULT */}
+          {/* Show Result */}
           {showResult && (
             <div className="quiz-result-box">
               {isCorrect ? (
-                <p className="correct-text"> Correct Answer!</p>
+                <p className="correct-text">Correct Answer!</p>
               ) : (
                 <p className="wrong-text">
-                   Wrong Answer <br />
-                   {currentQuestion.options[correctAnswer]}
+                  Wrong Answer <br />
+                  {currentQuestion.options[correctAnswer]}
                 </p>
               )}
 
               <button onClick={handleNext} className="btn btn-primary quiz-nav-btn">
-                {current === questions.length - 1
-                  ? "Submit Quiz"
-                  : "Next Question →"}
+                {current === questions.length - 1 ? "Submit Quiz" : "Next Question →"}
               </button>
             </div>
           )}
