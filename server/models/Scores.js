@@ -13,6 +13,23 @@ const scoreSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    //  technology: {
+    //   type: String,
+    //   required: true,
+    //   trim: true,
+    //   enum: [
+    //     "html",
+    //     "css",
+    //     "js",
+    //     "react",
+    //     "node",
+    //     "mongodb",
+    //     "java",
+    //     "python",
+    //     "cpp",
+    //     "bootstrap",
+    //   ]
+    // },
     score: {
       type: Number,
       required: true,
@@ -28,6 +45,7 @@ const scoreSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
+    // wrong: { type: Number, required: true, min: 0, default: 0 },
     timeTaken: {
       type: Number, // in seconds
       default: 0,

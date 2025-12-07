@@ -75,7 +75,6 @@ export default function Quiz({ me }) {
     setIsCorrect(key === correctKey);
     setCorrectAnswer(correctKey);
   };
-
   // Next question
   const handleNext = () => {
     const newAns = [...answers, selectedAnswer];

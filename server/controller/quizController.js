@@ -13,16 +13,22 @@ export const getQuestions = async (req, res) => {
       .limit(limit)
       .lean();
 
-    // Remove correct answer before sending to frontend
-    const publicQs = questions.map(({ answer, ...rest }) => rest);
-
-    if (publicQs.length === 0) {
+    if (questions.length === 0) {
       return res.json({ 
         questions: [],
         total: 0,
         message: "No questions available. Please add questions to the database."
       });
     }
+    // Send full question including correct answer
+     const publicQs = questions.map(q => ({
+      _id: q._id,
+      question: q.question,
+      options: q.options,
+      answer: q.answer   // ⬅ ADD THIS BACK
+    }));
+    console.log(publicQs)
+
     res.json({ 
       questions: publicQs,
       total: publicQs.length 
